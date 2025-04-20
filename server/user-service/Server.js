@@ -2,9 +2,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { connectToDatabase } from './DbConnection.js';
-import userRoute from './routes/userRoute.js';
+
 import jwt, { decode } from "jsonwebtoken"
-import orderRoute from './routes/orderRoute.js';
+
 
 dotenv.config();
 
@@ -33,8 +33,6 @@ app.use((req,res,next)=>{
 
 connectToDatabase();
 
-app.use("/api/v1/users",userRoute)
-app.use("/api/v1/orders",orderRoute)
 
 app.listen(3000,()=>{
     console.log("Server is running on port 3000")
