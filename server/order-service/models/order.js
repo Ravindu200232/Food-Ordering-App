@@ -58,6 +58,11 @@ const orderSchema = new mongoose.Schema({
     default: Date.now,
     required: true,
   },
+  isApprove :{
+    type : Boolean,
+    required : true,
+    default : false,
+  }
 });
 
 const Order = mongoose.model("Order", orderSchema);
