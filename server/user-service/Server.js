@@ -4,11 +4,17 @@ import dotenv from 'dotenv';
 import { connectToDatabase } from './DbConnection.js';
 import userRoute from './routes/userRoute.js';
 import jwt, { decode } from "jsonwebtoken"
+import cors from "cors";
 
 
 dotenv.config();
 
 const app = express();
+
+
+app.use(cors());
+
+
 
 
 app.use(bodyParser.json());

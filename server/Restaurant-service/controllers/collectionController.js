@@ -8,6 +8,7 @@ export async function createCollection(req,res) {
     try{
         const data = req.body
         data.ownerId= req.user.id
+        data.itemId = "I" + Math.floor(Math.random() * 10000).toString().padStart(4, '0')
 
         if(checkHasAccount(req)){
 
@@ -46,35 +47,16 @@ export async function getRestaurantCollection(req,res) {
 
         const restaurantID = req.params.id;
 
-        if(checkHasAccount(req)){
+        
 
-            if(checkRestaurant(req)){
-                if(restaurantID){
+           
+                
                  const result = await Collection.find({
                      restaurantId:  restaurantID
                  })
                  res.json(result)
                  return
-                }else{
                 
-                 res.json({
-                     message : "please try again"
-                 })
-                 return
-                }
-            }
-            res.status(401).json({
-                message : "can't access this task "
-            })
-            return
-            
-
-        }else{
-            res.status(401).json({
-                message : "Please Login first "
-            })
-            return
-        }
         
     }catch(err){
         res.status(500).json({
@@ -264,6 +246,25 @@ export async function approveItem(req,res) {
             })
             return
         }
+    }catch(err){
+        res.status(500).json({
+            error : "Internal Server error" || err
+        })
+    }
+    
+}
+
+
+export async function getOne(req,res) {
+
+    try{
+        const id = req.params.id;
+
+        const result = await Collection.findOne({
+            _id : id
+        })
+        res.json(result)
+        return
     }catch(err){
         res.status(500).json({
             error : "Internal Server error" || err
