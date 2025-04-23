@@ -1,77 +1,80 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-  // Customer info
+  // Customer Info
   email: {
     type: String,
     required: true,
   },
+  customerName : {
+    type : String,
+    required : true
+  },
+  phone : {
+    type : String,
+    required : true
+  },
+  address: {
+    type: String,
+    required: true,
+  },
 
-  // Unique order identifier
+  // Unique Order ID
   orderId: {
     type: String,
     required: true,
     unique: true,
   },
-  address : {
-    type : String,
-    required : true
-  },
 
- 
-
-  // Items in the order
-  orderItem: {
-    type: [
-      {
-        product: {
-          key: {
-            type: String,
-            required: true,
-          },
-           // Restaurant related
-            restaurantId: {
-            type: String,
-            ref: "Restaurant",
-            required: true,
+  // Product Info (flat structure per item)
+  key: {
+    type: String,  // Product ID
+    required: true,
   },
-          name: {
-            type: String,
-            required: true,
-          },
-          image: {
-            type: String,
-            required: true,
-          },
-          price: {
-            type: Number,
-            required: true,
-          },
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
+  Item_Id: {
+    type: String,
+    required: true,
+  },
+  Item_name: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
     required: true,
   },
 
-  // Order status
+  // Restaurant Info
+  restaurantId: {
+    type: String,
+    ref: "Restaurant",
+    required: true,
+  },
+  ownerId: {
+    type: String,
+    required: true,
+  },
+
+  // Order Status & Tracking
   status: {
     type: String,
     enum: ["pending", "confirmed", "preparing", "dispatched", "delivered"],
     default: "pending",
     required: true,
   },
-
-  // Delivery assignment
   deliveryId: {
-    type: String,
-   
+    type: String, // Optional: Delivery agent ID
   },
 
-  // Payment and pricing
+  // Pricing & Payment
   totalAmount: {
     type: Number,
     required: true,
@@ -80,22 +83,30 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ["unpaid", "paid"],
     default: "unpaid",
-    
   },
 
-  // Timestamps
+  // Admin Approval
+  isApprove: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+
+  // Timestamp
   createdAt: {
     type: Date,
     default: Date.now,
     required: true,
   },
-
-  // Admin approval (optional logic)
-  isApprove: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
+  lat: {
+    type: Number,
+    required:false
+},
+lng: {
+    type: Number,
+    required:false
+   
+},
 });
 
 const Order = mongoose.model("Order", orderSchema);

@@ -49,8 +49,8 @@ export function BookingPage() {
         },
       })
       .then((res) => {
-        console.log(res.data);
-        const sendData = res.data;
+        console.log("res",res.data.orders)
+        const sendData = res.data.orders;
         localStorage.removeItem("cart");
         toast.success("Booking Created");
         setCart(LoadCart());
@@ -110,7 +110,7 @@ export function BookingPage() {
         <button 
           className="bg-accent text-white px-4 py-2 rounded-md fixed bottom-10 right-10"
           onClick={()=>{
-            navigate("/profile")
+            navigate("/location")
           }}
         >
           Update order address

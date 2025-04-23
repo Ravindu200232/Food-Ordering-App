@@ -132,9 +132,7 @@ export function Profile() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/update/password/${
-          user.id
-        }`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/update/password/${user.id}`,
         passwords,
         {
           headers: {
@@ -179,20 +177,47 @@ export function Profile() {
     window.location.href = "/login";
   };
 
+  // 📍 Get location & reverse geocode
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      Swal.fire("Error", "Geolocation is not supported by your browser.", "error");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          const res = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const location = res.data?.display_name || "";
+          setFormData((prev) => ({
+            ...prev,
+            address: location,
+          }));
+          Swal.fire("Success", "Location fetched successfully!", "success");
+        } catch (err) {
+          console.error("Reverse geocoding failed", err);
+          Swal.fire("Error", "Failed to fetch location details.", "error");
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        Swal.fire("Error", "Failed to access your location.", "error");
+      }
+    );
+  };
+
   if (!user) return <div className="p-6">Loading profile...</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-gradient-to-r from-gray-700 to-pink-700 rounded-xl shadow-xl mt-10">
       <div className="flex flex-col items-center mb-6">
-        <div
-          onClick={() => fileInputRef.current.click()}
-          className="cursor-pointer mb-4"
-        >
+        <div onClick={() => fileInputRef.current.click()} className="cursor-pointer mb-4">
           <img
-            src={
-              formData.image ||
-              "https://via.placeholder.com/150?text=Upload+Image"
-            }
+            src={formData.image || "https://via.placeholder.com/150?text=Upload+Image"}
             alt="Profile"
             className="w-32 h-32 object-cover rounded-full border-4 border-white shadow-lg hover:opacity-90 transition-all duration-300"
           />
@@ -209,7 +234,7 @@ export function Profile() {
         </h2>
         <button
           onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-all duration-200"
+          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-all duration-200"
         >
           Logout
         </button>
@@ -256,6 +281,13 @@ export function Profile() {
             className="border p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Address"
           />
+          <button
+            onClick={getLocation}
+            type="button"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Use Current Location
+          </button>
 
           <div className="flex justify-between mt-6">
             <button
@@ -272,7 +304,6 @@ export function Profile() {
             </button>
           </div>
 
-          {/* Change Password Section */}
           <div className="mt-10 border-t pt-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
               Change Password
@@ -301,7 +332,6 @@ export function Profile() {
             </button>
           </div>
 
-          {/* Order History Section */}
           <div className="mt-10 border-t pt-6">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-semibold text-gray-700 mb-4">
@@ -383,5 +413,3 @@ export function Profile() {
     </div>
   );
 }
-
-

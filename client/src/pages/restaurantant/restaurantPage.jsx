@@ -8,17 +8,17 @@ import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 
 
 
-import User from "./users";
-import { AdminReviewPage } from "./adminReviewpage";
-import { AdminInquiryPage } from "./adminInquirypage";
-import { AdminPayment } from "./adminPayment";
+
+import { RestaurantReview } from "./restaurantReview";
+
 import RestaurantCreate from "./restaurantCreate";
-import AdminBookingPage from "../admin/adminbookingpage";
+
 import AddRestaurant from "./addResturant";
 import UpdateRestaurant from "./updateRestaurant";
 import CollectionPage from "./collectionPage";
 import AddCollection from "./addCollection";
 import UpdateCollection from "./updateCollection";
+import RestaurantOrder from "./restaurantOrder";
 
 export default function RestaurantPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -56,26 +56,18 @@ export default function RestaurantPage() {
               {
                 to: "/restaurantC/booking",
                 icon: <CiBookmarkCheck />,
-                label: "Bookings",
+                label: "Restaurant Order",
               },
-              { to: "/restaurantC/item", icon: <CiSpeaker />, label: "Items" },
+             
               {
                 to: "/restaurantC/restaurant",
                 icon: <CiBookmarkCheck />,
-                label: "Packages",
+                label: "Restaurant",
               },
-              { to: "/restaurantC/user", icon: <CiUser />, label: "Users" },
-              { to: "/admin/review", icon: <MdRateReview />, label: "Reviews" },
-              {
-                to: "/restaurantC/inquiry",
-                icon: <BsGraphDown />,
-                label: "Inquiries",
-              },
-              {
-                to: "/restaurantC/payment",
-                icon: <MdOutlinePayments />,
-                label: "Payment",
-              },
+         
+              { to: "/restaurantC/review", icon: <MdRateReview />, label: "Reviews" },
+              ,
+              
             ].map(({ to, icon, label }) => (
               <Link
                 key={to}
@@ -105,17 +97,17 @@ export default function RestaurantPage() {
       {/* Main Content */}
       <main className="flex-1 p-4 :ml-64 bg-gray-100 overflow-y-auto">
         <Routes>
-          <Route path="/booking" element={<AdminBookingPage />} />
+          <Route path="/booking" element={<RestaurantOrder />} />
           <Route path="/restaurant/collection" element={<CollectionPage />} />
           <Route path="/restaurant/collection/add" element={<AddCollection />} />
           <Route path="/restaurant/collection/update" element={<UpdateCollection />} />
-          <Route path="/user/*" element={<User />} />
-          <Route path="/review" element={<AdminReviewPage />} />
-          <Route path="/inquiry" element={<AdminInquiryPage />} />
+
+          <Route path="/review" element={<RestaurantReview />} />
+
           <Route path="/restaurant/" element={<RestaurantCreate />} />
           <Route path="/restaurant/add" element={<AddRestaurant />} />
           <Route path="/restaurant/edit" element={<UpdateRestaurant />} />
-          <Route path="/payment" element={<AdminPayment />} />
+
         </Routes>
       </main>
     </div>

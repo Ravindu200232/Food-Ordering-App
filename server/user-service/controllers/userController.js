@@ -3,7 +3,7 @@ import User from '../models/users.js';
 import jwt from "jsonwebtoken"
 import { checkAdmin, checkHasAccount } from './authController.js';
 import OTP from '../models/otp.js';
-import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer';
 
 
 
@@ -83,8 +83,11 @@ export async function userLogin(req,res) {
                         email : checkUser.email,
                         password : checkUser.password,
                         role : checkUser.role,
+                        address : checkUser.address,
                         phone : checkUser.phone,
-                        image : checkUser.image
+                        image : checkUser.image,
+                        lat : checkUser.lat,
+                        lng : checkUser.lng
 
                     },
                     process.env.SEKRET_KEY

@@ -10,6 +10,7 @@ import { BookingPage } from "./bookingpage";
 import { Profile } from "./profile";
 import RestaurantDetails from "./restaurantDetails";
 import Restaurant from "./restaurant";
+import { Location } from "./location";
 
 export default function HomePage() {
   return (
@@ -24,6 +25,7 @@ export default function HomePage() {
           <Route path="/item" element={<Item />} />
           <Route path="/product/:key" element={<ProductOverview />} />
           <Route path="/cart" element={<BookingPage />} />
+          <Route path="/location" element={<Location/>}/>
           <Route path="/" element={<Home />} />
           <Route path="/*" element={<ErrorNotFound />} />
           <Route path="/profile" element={<Profile />} />

@@ -55,7 +55,7 @@ export default function AddRestaurant() {
       );
 
       toast.success("Restaurant added successfully!");
-      navigate("/admin/restaurant");
+      navigate("/restaurantC/restaurant");
     } catch (error) {
       console.error("Error adding restaurant:", error);
       toast.error("Failed to add restaurant. Please try again.");

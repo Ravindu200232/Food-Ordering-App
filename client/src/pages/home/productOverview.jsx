@@ -20,6 +20,7 @@ export default function FoodItemOverview() {
   const [userComment, setUserComment] = useState("");
   const [refresh, setRefresh] = useState(false);
 
+
   useEffect(() => {
     // Fetch food item details
     axios
@@ -38,6 +39,7 @@ export default function FoodItemOverview() {
             .then((restaurantRes) => setRestaurant(restaurantRes.data))
             .catch((err) => console.error("Failed to load restaurant", err));
         }
+
       })
       .catch((err) => {
         console.error(err);
@@ -46,7 +48,7 @@ export default function FoodItemOverview() {
 
     // Fetch reviews
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/reviews/${key}`)
+      .get(`http://localhost:3002/api/v1/reviews${key}`)
       .then((res) => {
         setReviews(res.data);
       })
@@ -65,11 +67,14 @@ export default function FoodItemOverview() {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/reviews`,
+        `http://localhost:3002/api/v1/reviews`,
         {
           productId: key,
           rating: userRating,
           comment: userComment,
+          ownerId : restaurant.ownerId,
+          restaurantName : restaurant.name,
+          itemName : foodItem.name
         },
         {
           headers: {

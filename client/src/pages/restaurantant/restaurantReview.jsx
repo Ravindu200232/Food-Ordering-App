@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export function AdminReviewPage() {
+export function RestaurantReview() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -10,7 +10,7 @@ export function AdminReviewPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/reviews`,
+        `http://localhost:3002/api/v1/reviews`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -93,8 +93,11 @@ export function AdminReviewPage() {
               <th className="py-3 px-4 border-b">Email</th>
               <th className="py-3 px-4 border-b">Rating</th>
               <th className="py-3 px-4 border-b">Comment</th>
+
               <th className="py-3 px-4 border-b">Status</th>
-              <th className="py-3 px-4 border-b">Actions</th>
+              <th className="py-3 px-4 border-b">ITem</th>
+              <th className="py-3 px-4 border-b">RestaurantName</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -121,22 +124,9 @@ export function AdminReviewPage() {
                     <span className="text-yellow-600 font-medium">Pending</span>
                   )}
                 </td>
-                <td className="py-3 px-4 space-x-2">
-                  {!review.isApproved && (
-                    <button
-                      onClick={() => handleApprove(review._id)}
-                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      Approve
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleDelete(review._id)}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </td>
+                <td className="py-3 px-4">{review.itemName}</td>
+                <td className="py-3 px-4">{review.restaurantName}</td>
+               
               </tr>
             ))}
 
@@ -186,22 +176,7 @@ export function AdminReviewPage() {
                 </span>
               </div>
 
-              <div className="mt-4 space-y-2">
-                {!review.isApproved && (
-                  <button
-                    onClick={() => handleApprove(review._id)}
-                    className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  >
-                    Approve
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDelete(review._id)}
-                  className="w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
+             
             </div>
           ))
         )}

@@ -84,6 +84,8 @@ export default function Login() {
             address: user.address,
             phone: user.phone,
             image: user.image,
+            lat : user.lat,
+            lng : user.lng
           })
         );
 

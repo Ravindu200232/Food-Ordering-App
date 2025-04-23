@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 export default function RestaurantOrder() {
@@ -13,12 +14,12 @@ export default function RestaurantOrder() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/orders`,
+          `http://localhost:3001/api/v1/orders`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setBookingData(response.data.orders);
+        setBookingData(response.data || []);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -29,29 +30,38 @@ export default function RestaurantOrder() {
     fetchBookingData();
   }, []);
 
-  const handleApproveOrder = async (orderId, isApproved) => {
+  const handleStatusChange = async (orderId, newStatus) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
+  
       await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        `http://localhost:3001/api/v1/orders/status/${orderId}`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
-
+  
       setBookingData((prevData) =>
         prevData.map((order) =>
-          order.orderId === orderId
-            ? { ...order, isApprove: !isApproved }
-            : order
+          order.orderId === orderId ? { ...order, status: newStatus } : order
         )
       );
+  
+      toast.success(`Order status updated in to ${newStatus}`);
     } catch (error) {
-      console.log("Error updating order status:", error);
+      console.error("Error updating status:", error);
+      toast.error("Failed to update order status.");
     } finally {
       setLoading(false);
     }
   };
+  
+  
 
   const handleDeleteOrder = async (orderId) => {
     const result = await Swal.fire({
@@ -69,14 +79,14 @@ export default function RestaurantOrder() {
         setLoading(true);
         const token = localStorage.getItem("token");
         await axios.delete(
-          `${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}`,
+          `http://localhost:3001/api/v1/orders/delete/${orderId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
         setBookingData((prevData) =>
-          prevData.filter((order) => order.orderId !== orderId)
+          prevData.filter((order) => order._id !== orderId)
         );
 
         Swal.fire("Deleted!", "Order has been deleted.", "success");
@@ -105,220 +115,111 @@ export default function RestaurantOrder() {
 
   return (
     <div className="w-full h-full p-6 flex flex-col items-center bg-secondary text-black">
-      <h1 className="text-3xl font-bold text-gray-700 mb-6">
-        Order Management
-      </h1>
+      <h1 className="text-3xl font-bold text-gray-700 mb-6">Order Management</h1>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
         </div>
       ) : (
-        <>
-          {/* Mobile Layout */}
-          <div className="sm:hidden w-full space-y-4">
-            {bookingData.map((order) => (
-              <div
-                key={order._id}
-                className="bg-white shadow-lg rounded-lg p-4"
-              >
-                <div className="flex justify-between">
-                  <div className="font-semibold">{order.orderId}</div>
-                  <div
-                    className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                      order.isApprove
-                        ? "bg-green-500 text-white"
-                        : "bg-yellow-500 text-white"
-                    }`}
-                  >
-                    {order.isApprove ? "Approved" : "Pending"}
-                  </div>
-                </div>
-                <div>Email: {order.email}</div>
-                <div>
-                  Order Date: {new Date(order.orderDate).toLocaleDateString()}
-                </div>
-                <div>Total Amount: Rs.{order.totalAmount}</div>
-                <div>Description: {order.description || "N/A"}</div>
-
-                <div className="flex justify-between mt-4">
-                  <button
-                    className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                      order.isApprove ? "bg-gray-500" : "bg-blue-500"
-                    } text-white`}
-                    onClick={() =>
-                      handleApproveOrder(order.orderId, order.isApprove)
-                    }
-                  >
-                    {order.isApprove ? "Unapprove" : "Approve"}
-                  </button>
-                  <button
-                    className="text-blue-600 underline hover:text-blue-800"
-                    onClick={() => toggleRow(order.orderId)}
-                  >
-                    {expandedRows[order.orderId] ? "Hide Items" : "View Items"}
-                  </button>
-                  <button
-                    className="px-3 py-1 text-sm font-semibold rounded-full bg-red-500 text-white"
-                    onClick={() => handleDeleteOrder(order.orderId)}
-                  >
-                    Delete
-                  </button>
-                </div>
-
-                {expandedRows[order.orderId] && (
-                  <div className="mt-4">
-                    {order.orderItem.map((item) => (
-                      <div
-                        key={item._id}
-                        className="border rounded-lg p-3 mb-4"
+        <div className="w-full overflow-x-auto">
+          <table className="w-full text-sm text-left text-gray-600">
+            <thead className="bg-primary text-white">
+              <tr>
+                <th className="px-4 py-3">Order ID</th>
+                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">Order Date</th>
+                <th className="px-4 py-3">Amount</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Description</th>
+                <th className="px-4 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookingData.map((order) => (
+                <React.Fragment key={order.orderId}>
+                  <tr className="bg-white border-b hover:bg-gray-100">
+                    <td className="px-4 py-3">{order.orderId}</td>
+                    <td className="px-4 py-3">{order.email}</td>
+                    <td className="px-4 py-3">
+                      {order.createdAt
+                        ? new Date(order.createdAt).toLocaleDateString()
+                        : "N/A"}
+                    </td>
+                    <td className="px-4 py-3">Rs.{order.totalAmount}</td>
+                    <td className="px-4 py-3 capitalize">{order.status}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => toggleDescription(order.orderId)}
                       >
-                        <div className="text-center">{item.product.name}</div>
-                        <img
-                          src={item.product.image || "/default-product.jpg"}
-                          alt={item.product.name}
-                          className="w-20 h-20 object-cover mx-auto rounded"
-                        />
-                        <div>Quantity: {item.quantity}</div>
-                        <div>Price: ${item.product.price}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop/Table Layout */}
-          <div className="hidden sm:block w-full bg-white shadow-lg rounded-lg overflow-x-auto">
-            <div className="min-w-full">
-              <table className="w-full border-collapse">
-                <thead className="bg-primary text-white">
-                  <tr>
-                    <th className="py-3 px-4 text-center">Order ID</th>
-                    <th className="py-3 px-4 text-left">Email</th>
-                    <th className="py-3 px-4 text-left">Order Date</th>
-                    <th className="py-3 px-4 text-left">Total Amount</th>
-                    <th className="py-3 px-4 text-center">Description</th>
-                    <th className="py-3 px-4 text-center">Status</th>
-                    <th className="py-3 px-4 text-center">Approve</th>
-                    <th className="py-3 px-4 text-center">Details</th>
-                    <th className="py-3 px-4 text-center">Delete</th>
+                        {expandedDescriptions[order.orderId] ? "Hide" : "Show"} Description
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 text-center space-x-2">
+                      <select
+                        value={order.status}
+                        onChange={(e) =>
+                          handleStatusChange(order.orderId, e.target.value)
+                        }
+                        className="px-2 py-1 text-xs rounded border border-gray-300"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="preparing">Preparing</option>
+                        <option value="dispatched">Dispatched</option>
+                        <option value="delivered">Delivered</option>
+                      </select>
+                      <button
+                        onClick={() => toggleRow(order.orderId)}
+                        className="px-3 py-1 bg-indigo-500 rounded text-white text-xs"
+                      >
+                        {expandedRows[order.orderId] ? "Hide Items" : "View Items"}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteOrder(order._id)}
+                        className="px-3 py-1 bg-red-500 rounded text-white text-xs"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {bookingData.map((order) => (
-                    <React.Fragment key={order._id}>
-                      <tr className="hover:bg-gray-100">
-                        <td className="py-3 px-4 text-center">
-                          {order.orderId}
-                        </td>
-                        <td className="py-3 px-4">{order.email}</td>
-                        <td className="py-3 px-4">
-                          {new Date(order.orderDate).toLocaleDateString()}
-                        </td>
-                        <td className="py-3 px-4">Rs.{order.totalAmount}</td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            className="text-blue-600 underline hover:text-blue-800"
-                            onClick={() => toggleDescription(order.orderId)}
-                          >
-                            {expandedDescriptions[order.orderId]
-                              ? "Hide"
-                              : "Show"}{" "}
-                            Description
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span
-                            className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                              order.isApprove
-                                ? "bg-green-500 text-white"
-                                : "bg-yellow-500 text-white"
-                            }`}
-                          >
-                            {order.isApprove ? "Approved" : "Pending"}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                              order.isApprove ? "bg-gray-500" : "bg-blue-500"
-                            } text-white`}
-                            onClick={() =>
-                              handleApproveOrder(order.orderId, order.isApprove)
-                            }
-                          >
-                            {order.isApprove ? "Unapprove" : "Approve"}
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            className="text-blue-600 underline hover:text-blue-800"
-                            onClick={() => toggleRow(order.orderId)}
-                          >
-                            {expandedRows[order.orderId]
-                              ? "Hide Items"
-                              : "View Items"}
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            className="px-3 py-1 text-sm font-semibold rounded-full bg-red-500 text-white"
-                            onClick={() => handleDeleteOrder(order.orderId)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
 
-                      {expandedDescriptions[order.orderId] && (
-                        <tr>
-                          <td
-                            colSpan="9"
-                            className="bg-gray-100 p-4 text-gray-700 italic"
-                          >
-                            <strong>Description:</strong>{" "}
-                            {order.description || "N/A"}
-                          </td>
-                        </tr>
-                      )}
+                  {expandedDescriptions[order.orderId] && (
+                    <tr>
+                      <td colSpan="7" className="px-4 py-3 bg-gray-50 italic flex flex-col">
+                        <p>Address : {order.address || "N/A"}</p>
+                        <p>customerName : {order.customerName || "N/A"}</p>
+                        <p>phone : {order.phone || "N/A"}</p>
+                        <p>email : {order.email || "N/A"}</p>
+              
+                      </td>
+                    </tr>
+                  )}
 
-                      {expandedRows[order.orderId] && (
-                        <tr>
-                          <td colSpan="9" className="bg-gray-50 p-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                              {order.orderItem.map((item) => (
-                                <div
-                                  key={item._id}
-                                  className="border rounded-lg p-3 flex flex-col items-center text-center"
-                                >
-                                  <img
-                                    src={
-                                      item.product.image ||
-                                      "/default-product.jpg"
-                                    }
-                                    alt={item.product.name || "Product"}
-                                    className="w-20 h-20 object-cover rounded"
-                                  />
-                                  <div className="mt-2 font-semibold">
-                                    {item.product.name}
-                                  </div>
-                                  <div>Quantity: {item.quantity}</div>
-                                  <div>Price: Rs.{item.product.price}</div>
-                                </div>
-                              ))}
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </>
+                  {expandedRows[order.orderId] && (
+                    <tr>
+                      <td colSpan="7" className="px-4 py-3 bg-gray-100">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                          <div className="border p-3 rounded-lg bg-white text-center">
+                            <img
+                              src={order.image || "/default-product.jpg"}
+                              alt={order.Item_name || "Product"}
+                              className="w-20 h-20 mx-auto object-cover rounded mb-2"
+                            />
+                            <div className="font-semibold">{order.Item_name}</div>
+                            <div>Quantity: {order.quantity}</div>
+                            <div>Price: Rs.{order.price}</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

@@ -51,7 +51,7 @@ export default function AddCollection() {
       );
 
       toast.success(result.data.message || "Item added successfully");
-      navigate("/admin/item");
+      navigate("/restaurantC/collection");
     } catch (err) {
       toast.error(err.response?.data?.error || "Failed to add item");
     }
