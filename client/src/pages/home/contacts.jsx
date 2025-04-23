@@ -18,7 +18,7 @@ export default function Contact() {
 
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/inquiry`,
+        `http://localhost:3000/api/inquiry`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ export default function Contact() {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/inquiry`,
+        `http://localhost:3000/api/inquiry`,
         { message },
         {
           headers: {
@@ -175,9 +175,7 @@ export default function Contact() {
                               }
 
                               await axios.put(
-                                `${
-                                  import.meta.env.VITE_BACKEND_URL
-                                }/api/inquiry/${inq._id}`,
+                                `http://localhost:3000/api/inquiry/${inq._id}`,
                                 { message },
                                 {
                                   headers: {
@@ -219,9 +217,7 @@ export default function Contact() {
                               try {
                                 const token = localStorage.getItem("token");
                                 await axios.delete(
-                                  `${
-                                    import.meta.env.VITE_BACKEND_URL
-                                  }/api/inquiry/${inq._id}`,
+                                  `http://localhost:3000/api/inquiry/${inq._id}`,
                                   {
                                     headers: {
                                       Authorization: `Bearer ${token}`,

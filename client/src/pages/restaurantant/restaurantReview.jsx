@@ -25,54 +25,9 @@ export function RestaurantReview() {
     }
   };
 
-  const handleApprove = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/reviews/approve/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      fetchReviews(); // Refresh list
-    } catch (error) {
-      console.error("Error approving review:", error);
-    }
-  };
+  
 
-  const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    });
-
-    if (confirm.isConfirmed) {
-      try {
-        const token = localStorage.getItem("token");
-        await axios.delete(
-          `${import.meta.env.VITE_BACKEND_URL}/api/reviews/delete/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        Swal.fire("Deleted!", "The review has been deleted.", "success");
-        fetchReviews(); // Refresh list
-      } catch (error) {
-        console.error("Error deleting review:", error);
-        Swal.fire("Error!", "Failed to delete the review.", "error");
-      }
-    }
-  };
+  
 
   useEffect(() => {
     fetchReviews();

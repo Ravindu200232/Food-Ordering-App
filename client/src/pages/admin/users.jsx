@@ -11,7 +11,7 @@ export default function User() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/users`,
+          `http://localhost:3000/api/v1/users`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUsers(response.data);
@@ -31,7 +31,7 @@ export default function User() {
       setLoading(true);
       const token = localStorage.getItem("token");
       await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/block/${email}`,
+        `http://localhost:3000/api/v1/users/block/${email}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

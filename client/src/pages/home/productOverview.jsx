@@ -48,9 +48,10 @@ export default function FoodItemOverview() {
 
     // Fetch reviews
     axios
-      .get(`http://localhost:3002/api/v1/reviews${key}`)
+      .get(`http://localhost:3002/api/v1/reviews/${key}`)
       .then((res) => {
         setReviews(res.data);
+        console.log(res.data)
       })
       .catch((err) => {
         console.error(err);
@@ -206,7 +207,7 @@ export default function FoodItemOverview() {
                     <div>
                       <p className="font-semibold">{review.name}</p>
                       <p className="text-sm text-gray-500">
-                        {new Date(review.date).toLocaleDateString()}
+                        {new Date(review.data).toLocaleDateString()}
                       </p>
                     </div>
                   </div>

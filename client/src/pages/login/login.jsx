@@ -97,6 +97,7 @@ export default function Login() {
 
         if (user.role == "admin") {
           navigate("/admin/");
+          return
         } if(user.role == "restaurant"){
           navigate("/restaurantC/")
           return

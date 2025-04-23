@@ -6,13 +6,13 @@ import toast from "react-hot-toast";
 export function Payment() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { amount, bookingId } = location.state || {};
+  const { amount, bookingIds } = location.state || {};
   const [paymentType, setPaymentType] = useState("Card");
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  console.log(location.state.bookingIds)
 
   const validateCardInputs = () => {
     const cardPattern = /^\d{16}$/;
@@ -39,34 +39,41 @@ export function Payment() {
     if (paymentType === "Card" && !validateCardInputs()) {
       return;
     }
-
+  
     try {
       const token = localStorage.getItem("token");
-
-      const res = await axios.post(
-        `${backendUrl}/api/payment`,
-        {
-          bookingId,
-          amount,
-          paymentType,
-          cardNumber,
-          expiry,
-          cvv,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+  
+      // Divide total amount evenly and round to 2 decimals
+      const perBookingAmount = parseFloat((amount / bookingIds.length).toFixed(2));
+  
+      // Make separate requests for each bookingId
+      for (const bookingId of bookingIds) {
+        await axios.post(
+          `http://localhost:3004/api/payment`,
+          {
+            bookingId,
+            amount: perBookingAmount,
+            paymentType,
+            cardNumber,
+            expiry,
+            cvv,
           },
-        }
-      );
-
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
+  
       toast.success("Payment successful!");
-      navigate("/"); // 👈 Redirect to home after success
+      navigate("/"); // 👈 Redirect after all successful
     } catch (err) {
       console.error(err);
       toast.error("Payment failed.");
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-primary p-6 flex flex-col items-center">

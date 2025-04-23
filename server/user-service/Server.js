@@ -5,6 +5,7 @@ import { connectToDatabase } from './DbConnection.js';
 import userRoute from './routes/userRoute.js';
 import jwt, { decode } from "jsonwebtoken"
 import cors from "cors";
+import inquiryRouter from './routes/inquiryRouter.js';
 
 
 dotenv.config();
@@ -40,7 +41,7 @@ app.use((req,res,next)=>{
 connectToDatabase();
 
 app.use("/api/v1/users",userRoute)
-
+app.use("/api/inquiry",inquiryRouter);
 
 app.listen(3000,()=>{
     console.log("Server is running on port 3000")

@@ -4,96 +4,185 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Import SweetAlert2
 
 export default function AdminPackagePage() {
-  const [packages, setPackages] = useState([]);
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const navigate = useNavigate(); // Using the navigate hook
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchPackages = async () => {
-      try {
-        const token = localStorage.getItem("token"); // Retrieve token from localStorage
-        const response = await axios.get(`${backendUrl}/api/packages`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include token in Authorization header
-          },
-        });
-        setPackages(response.data);
-      } catch (error) {
-        console.error("Error fetching packages", error);
-      }
-    };
-    fetchPackages();
-  }, []);
+  const OwnerName = localStorage.getItem("user")
 
-  const handleDelete = async (id) => {
-    // Show confirmation popup
+
+  const handleUpdateRestaurant = async (id) => {
+
+    navigate("/restaurantC/restaurant/edit", { state: id });
+  }
+
+  const handleItem = async (id) => {
+    navigate("/admin/item", { state: id });
+  }
+
+
+  const handleDeleteRestaurant = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
+      cancelButtonText: "No, cancel",
     });
 
     if (result.isConfirmed) {
       try {
-        const token = localStorage.getItem("token"); // Retrieve token from localStorage
-        await axios.delete(`${backendUrl}/api/packages/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include token in Authorization header
-          },
+        const token = localStorage.getItem("token");
+        const response = await axios.delete(`http://localhost:3002/api/v1/restaurant/delete/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        // SweetAlert success popup
-        Swal.fire("Deleted!", "The package has been deleted.", "success");
-
-        // Optionally, reload the page to reflect changes
-        window.location.reload();
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: response.data.message,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        fetchRestaurants();
+        setRestaurants((prevRestaurants) =>
+          prevRestaurants.filter((restaurant) => restaurant._id !== id)
+        );
       } catch (error) {
-        Swal.fire("Error", "There was an error deleting the package.", "error"); // SweetAlert error popup
+        console.error("Error status:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to delete the restaurant.",
+        });
       }
-    } else {
-      Swal.fire("Cancelled", "The package was not deleted.", "info"); // SweetAlert cancellation popup
     }
   };
 
-  const handleEdit = (pkg) => {
-    // Navigate to the edit page and pass the package data via state
-    navigate("/admin/package/edit", { state: pkg });
+  const fetchRestaurants = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:3002/api/v1/restaurant", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setRestaurants(response.data);
+    } catch (error) {
+      console.error("Failed to fetch restaurants:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
+
+  const handleToggleShop = async (id, shouldOpen) => {
+    try {
+      const token = localStorage.getItem("token");
+      const endpoint = shouldOpen
+        ? `http://localhost:3002/api/v1/restaurant/isOpen/${id}`
+        : `http://localhost:3002/api/v1/restaurant/isClose/${id}`;
+
+      const response = await axios.post(
+        endpoint,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: response.data.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      fetchRestaurants(); // Refresh list
+    } catch (error) {
+      console.error("Error toggling shop status:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to update shop status.",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6">Packages</h2>
-      <Link
-        to="/admin/package/add"
-        className="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg mb-4"
-      >
-        Add New Package
-      </Link>
-      <div className="space-y-4">
-        {packages.map((pkg) => (
-          <div key={pkg._id} className="border p-4 rounded-lg">
-            <h3 className="text-xl font-semibold">{pkg.name}</h3>
-            <p>{pkg.description}</p>
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={() => handleEdit(pkg)} // Use handleEdit to pass the package
-                className="text-blue-500"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(pkg._id)}
-                className="text-red-500"
-              >
-                Delete
-              </button>
-            </div>
+    <div className="max-w-6xl mx-auto mt-8 px-4">
+      <h1 className="text-3xl font-bold text-center mb-8">Restaurants</h1>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {restaurants.map((restaurant) => (
+          //
+          
+          <div
+            key={restaurant._id}
+            className="bg-white shadow-md rounded-xl p-4 space-y-3"
+          >
+            <button onClick={() => handleItem(restaurant._id)}>
+            <img
+              src={restaurant.images?.[0] || "/default-restaurant.jpg"}
+              alt={restaurant.name}
+              className="w-full cur h-48 object-cover rounded-md"
+            />
+            </button>
+            <h2 className="text-xl font-semibold">{restaurant.name}</h2>
+            <p><strong>Owner Name:</strong> {restaurant.ownerName}</p>
+            <p><strong>Address:</strong> {restaurant.address}</p>
+            <p><strong>Phone:</strong> {restaurant.phone}</p>
+            <p><strong>Description:</strong> {restaurant.description}</p>
+            <p>
+              <strong>Status:</strong>{" "}
+              <span className={`font-semibold ${restaurant.isOpen ? "text-green-600" : "text-red-500"}`}>
+                {restaurant.isOpen ? "Open" : "Closed"}
+              </span>
+            </p>
+            <p>
+              <strong>Verified:</strong>{" "}
+              <span className={`font-semibold ${restaurant.verified ? "text-green-600" : "text-red-500"}`}>
+                {restaurant.verified ? "Yes" : "No"}
+              </span>
+            </p>
+            
+            
+
+              <div className="flex flex-row gap-2">
+                <button
+                  onClick={() => handleDeleteRestaurant(restaurant._id)}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                >
+                  Delete
+                </button>
+
+                <button
+                  onClick={() => handleUpdateRestaurant(restaurant._id)}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
+                >
+                  Update
+                </button>
+              </div>
+
           </div>
+         
+          //
         ))}
       </div>
+
+      
     </div>
   );
 }

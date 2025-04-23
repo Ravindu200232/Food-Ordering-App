@@ -10,7 +10,7 @@ export function AdminReviewPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/reviews`,
+        `http://localhost:3002/api/v1/reviews`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -29,7 +29,7 @@ export function AdminReviewPage() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/reviews/approve/${id}`,
+        `http://localhost:3002/api/v1/reviews/approve/${id}`,
         {},
         {
           headers: {
@@ -58,7 +58,7 @@ export function AdminReviewPage() {
       try {
         const token = localStorage.getItem("token");
         await axios.delete(
-          `${import.meta.env.VITE_BACKEND_URL}/api/reviews/delete/${id}`,
+          `http://localhost:3002/api/v1/reviews/delete/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -94,7 +94,10 @@ export function AdminReviewPage() {
               <th className="py-3 px-4 border-b">Rating</th>
               <th className="py-3 px-4 border-b">Comment</th>
               <th className="py-3 px-4 border-b">Status</th>
+              <th className="py-3 px-4 border-b">ITem</th>
+              <th className="py-3 px-4 border-b">RestaurantName</th>
               <th className="py-3 px-4 border-b">Actions</th>
+             
             </tr>
           </thead>
           <tbody>
@@ -121,6 +124,8 @@ export function AdminReviewPage() {
                     <span className="text-yellow-600 font-medium">Pending</span>
                   )}
                 </td>
+                <td className="py-3 px-4">{review.itemName}</td>
+                <td className="py-3 px-4">{review.restaurantName}</td>
                 <td className="py-3 px-4 space-x-2">
                   {!review.isApproved && (
                     <button

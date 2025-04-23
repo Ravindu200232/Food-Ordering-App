@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectToDatabase } from './DbConnection.js';
 import jwt, { decode } from "jsonwebtoken"
 import cors from 'cors'
+import paymentRouter from './routes/paymentRoute.js';
 
 dotenv.config();
 
@@ -32,7 +33,7 @@ app.use((req,res,next)=>{
 });
 
 connectToDatabase();
-
+app.use("/api/payment",paymentRouter)
 
 
 app.listen(3000,()=>{

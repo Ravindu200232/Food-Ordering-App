@@ -234,3 +234,38 @@ export async function updateStatus(req, res) {
   }
 }
 
+export async function isApprove(req,res) {
+
+  try{
+    
+    const id = req.params.id;
+
+    if(checkHasAccount(req)){
+
+      if(checkAdmin){
+        await Order.updateOne({
+          isApprove : true
+        })
+        res.json("Order Approved")
+        return
+      }
+      else{
+        res.status(401).json({
+          message : "Can't access this task"
+        })
+        return
+      }
+    }else{
+      res.status(401).json({
+        message : "Can't access this task"
+      })
+      return
+    }
+  }catch(err){
+    res.status(500).json({
+      err : err
+    })
+  }
+  
+}
+

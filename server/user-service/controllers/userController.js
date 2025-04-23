@@ -145,12 +145,16 @@ export async function getUsers(req, res) {
   
   export async function blockorUnblockUser(req, res) {
     const email = req.params.email;
+
+   
   
     if (checkAdmin(req)) {
       try {
         const user = await User.findOne({
           email: email,
         });
+
+       
   
         if (user == null) {
           res.status(404).json({
@@ -159,14 +163,15 @@ export async function getUsers(req, res) {
           return;
         }
   
-        const isBlocked = !user.isBlocked;
+        const isBlock = !user.isBlock;
+        console.log(isBlock)
   
         await User.updateOne(
           {
             email: email,
           },
           {
-            isBlock: isBlocked,
+            isBlock: isBlock,
           }
         );
   

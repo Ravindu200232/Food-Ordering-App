@@ -6,15 +6,13 @@ import { useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 
 import AdminItemPage from "./adminItemPage";
-import AddItemPage from "./addItemPage";
-import UpdateItemPage from "./updateItemPage";
+
 import User from "./users";
 import AdminBookingPage from "./adminbookingpage";
 import { AdminReviewPage } from "./adminReviewpage";
 import { AdminInquiryPage } from "./adminInquirypage";
 import AdminPackagePage from "./adminpakage";
-import AddPackagePage from "./addpackage";
-import UpdatePackagePage from "./updatepackage";
+
 import { AdminPayment } from "./adminPayment";
 
 export default function AdminPage() {
@@ -55,11 +53,11 @@ export default function AdminPage() {
                 icon: <CiBookmarkCheck />,
                 label: "Bookings",
               },
-              { to: "/admin/item", icon: <CiSpeaker />, label: "Items" },
+             
               {
                 to: "/admin/package",
                 icon: <CiBookmarkCheck />,
-                label: "Packages",
+                label: "Restaurant",
               },
               { to: "/admin/user", icon: <CiUser />, label: "Users" },
               { to: "/admin/review", icon: <MdRateReview />, label: "Reviews" },
@@ -104,14 +102,11 @@ export default function AdminPage() {
         <Routes>
           <Route path="/booking" element={<AdminBookingPage />} />
           <Route path="/item" element={<AdminItemPage />} />
-          <Route path="/item/add" element={<AddItemPage />} />
-          <Route path="/item/edit" element={<UpdateItemPage />} />
           <Route path="/user/*" element={<User />} />
           <Route path="/review" element={<AdminReviewPage />} />
           <Route path="/inquiry" element={<AdminInquiryPage />} />
           <Route path="/package" element={<AdminPackagePage />} />
-          <Route path="/package/add" element={<AddPackagePage />} />
-          <Route path="/package/edit" element={<UpdatePackagePage />} />
+          
           <Route path="/payment" element={<AdminPayment />} />
         </Routes>
       </main>

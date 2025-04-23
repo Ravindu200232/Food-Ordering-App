@@ -10,7 +10,7 @@ export function AdminInquiryPage() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/inquiry`,
+        `http://localhost:3000/api/inquiry`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -36,7 +36,7 @@ export function AdminInquiryPage() {
 
     try {
       await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/inquiry/${id}`,
+        `http://localhost:3000/api/inquiry/${id}`,
         { response },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -64,7 +64,7 @@ export function AdminInquiryPage() {
       try {
         const token = localStorage.getItem("token");
         await axios.delete(
-          `${import.meta.env.VITE_BACKEND_URL}/api/inquiry/${id}`,
+          `http://localhost:3000/api/inquiry/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
