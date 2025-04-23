@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { connectToDatabase } from './DbConnection.js';
 import jwt, { decode } from "jsonwebtoken"
 import cors from 'cors'
+import driverRoute from './routes/driverRoute.js';
+import deliveryRoute from './routes/deliveryRoute.js';
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ app.use((req,res,next)=>{
 connectToDatabase();
 
 app.use("/api/v1/driver",driverRoute);
+app.use("/api/v1/delivery",deliveryRoute)
 
 app.listen(3000,()=>{
     console.log("Server is running on port 3000")

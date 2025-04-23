@@ -1,25 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function AdminPackagePage() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const OwnerName = localStorage.getItem("user")
-
-
-  const handleUpdateRestaurant = async (id) => {
-
-    navigate("/restaurantC/restaurant/edit", { state: id });
-  }
-
   const handleItem = async (id) => {
     navigate("/admin/item", { state: id });
-  }
-
+  };
 
   const handleDeleteRestaurant = async (id) => {
     const result = await Swal.fire({
@@ -47,6 +38,7 @@ export default function AdminPackagePage() {
           timer: 1500,
           showConfirmButton: false,
         });
+
         fetchRestaurants();
         setRestaurants((prevRestaurants) =>
           prevRestaurants.filter((restaurant) => restaurant._id !== id)
@@ -59,6 +51,39 @@ export default function AdminPackagePage() {
           text: "Failed to delete the restaurant.",
         });
       }
+    }
+  };
+
+  const handleVerifyRestaurant = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.put(
+        `http://localhost:3002/api/v1/restaurant/update/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Verified",
+        text: response.data.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      fetchRestaurants();
+    } catch (error) {
+      console.error("Verification error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to verify the restaurant.",
+      });
     }
   };
 
@@ -103,7 +128,7 @@ export default function AdminPackagePage() {
         showConfirmButton: false,
       });
 
-      fetchRestaurants(); // Refresh list
+      fetchRestaurants();
     } catch (error) {
       console.error("Error toggling shop status:", error);
       Swal.fire({
@@ -127,18 +152,16 @@ export default function AdminPackagePage() {
       <h1 className="text-3xl font-bold text-center mb-8">Restaurants</h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {restaurants.map((restaurant) => (
-          //
-          
           <div
             key={restaurant._id}
             className="bg-white shadow-md rounded-xl p-4 space-y-3"
           >
             <button onClick={() => handleItem(restaurant._id)}>
-            <img
-              src={restaurant.images?.[0] || "/default-restaurant.jpg"}
-              alt={restaurant.name}
-              className="w-full cur h-48 object-cover rounded-md"
-            />
+              <img
+                src={restaurant.images?.[0] || "/default-restaurant.jpg"}
+                alt={restaurant.name}
+                className="w-full h-48 object-cover rounded-md"
+              />
             </button>
             <h2 className="text-xl font-semibold">{restaurant.name}</h2>
             <p><strong>Owner Name:</strong> {restaurant.ownerName}</p>
@@ -157,32 +180,27 @@ export default function AdminPackagePage() {
                 {restaurant.verified ? "Yes" : "No"}
               </span>
             </p>
-            
-            
 
-              <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2">
+              <button
+                onClick={() => handleDeleteRestaurant(restaurant._id)}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+              >
+                Delete
+              </button>
+
+              {!restaurant.verified && (
                 <button
-                  onClick={() => handleDeleteRestaurant(restaurant._id)}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                  onClick={() => handleVerifyRestaurant(restaurant._id)}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg"
                 >
-                  Delete
+                  Verify
                 </button>
-
-                <button
-                  onClick={() => handleUpdateRestaurant(restaurant._id)}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
-                >
-                  Update
-                </button>
-              </div>
-
+              )}
+            </div>
           </div>
-         
-          //
         ))}
       </div>
-
-      
     </div>
   );
 }

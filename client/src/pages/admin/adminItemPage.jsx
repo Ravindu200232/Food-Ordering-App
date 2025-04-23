@@ -72,6 +72,22 @@ export default function AdminItemPage() {
     );
   };
 
+  const handleApprove = (collectionId) => {
+    const token = localStorage.getItem("token");
+    axios
+      .post(`http://localhost:3002/api/v1/collection/isApprove/${collectionId}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        toast.success("Item approved successfully!");
+        setItemsLoaded(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to approve the item.");
+      });
+  };
+
   return (
     <div className="w-full h-full p-4 sm:p-6 flex flex-col items-center">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-700 mb-6">
@@ -110,6 +126,14 @@ export default function AdminItemPage() {
                 >
                   {product.available ? "In Stock" : "Out of Stock"}
                 </div>
+                {!product.approve && (
+                  <button
+                    onClick={() => handleApprove(product._id)}
+                    className="w-full bg-green-600 text-white py-1 rounded text-sm mb-2"
+                  >
+                    Approve
+                  </button>
+                )}
                 <div className="flex justify-end space-x-4 pt-2">
                   <button
                     onClick={() => navigate("/admin/item/edit", { state: product })}
@@ -169,7 +193,15 @@ export default function AdminItemPage() {
                       {product.available ? "In Stock" : "Out of Stock"}
                     </td>
                     <td className="py-3 px-4 text-center flex justify-center space-x-3">
-                     
+                      {!product.approve && (
+                        <button
+                          onClick={() => handleApprove(product._id)}
+                          className="text-green-600 hover:text-green-800"
+                          title="Approve"
+                        >
+                          ✔️
+                        </button>
+                      )}
                       <button
                         onClick={() => handleDelete(product._id)}
                         className="text-red-500 hover:text-red-700"

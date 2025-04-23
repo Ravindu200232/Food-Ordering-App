@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import mediaUpload from "../../utils/mediaUpload";
 
-export default function Register() {
+export default function RestaurantRegister() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -47,9 +47,10 @@ export default function Register() {
         address,
         phone,
         image,
-        role, // Still included in payload
+        role : "restaurant",
       });
-<s></s>
+
+     
       toast.success("Registration Successfully")
       
       
@@ -63,20 +64,20 @@ export default function Register() {
   return (
     <form onSubmit={handleOnSubmit}>
       <div className="w-full h-screen flex justify-center items-center bg-picture">
-        <div className="w-[400px] h-[700px] backdrop-blur-xl rounded-2xl flex flex-col justify-center items-center relative">
-          <span className="text-white text-3xl mt-24 mb-4">Register</span>
+        <div className="w-[400px] h-[700px] backdrop-blur-2xl rounded-2xl flex flex-col justify-center items-center relative">
+          <span className="text-white text-3xl item mt-24 mb-4">Restaurant Register</span>
 
           {/* Profile Image Upload */}
           <div
-            className="cursor-pointer mb-4"
+            className="cursor-pointer  mb-4"
             onClick={() => fileInputRef.current.click()}
           >
             <img
               src={image || "https://via.placeholder.com/100?text=Upload"}
               alt="Profile"
-              className="w-24 h-24 ml-6 object-cover rounded-full border-2 border-white"
+              className="w-24 h-24 object-cover rounded-full border-2 ml-6 border-white"
             />
-            <label className="text-white text-sm mt-2 cursor-pointer">
+            <label className="text-white text-sm mt-2 ml cursor-pointer">
               Click to upload image
             </label>
           </div>
@@ -85,15 +86,15 @@ export default function Register() {
             accept="image/*"
             ref={fileInputRef}
             onChange={handleImageUpload}
-            className="hidden "
+            className="hidden"
           />
 
           {/* Form Fields */}
           <input
-            required
+          required
             type="text"
             placeholder="First Name"
-            className=" placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
+            className="w-[300px] h-[40px] placeholder:text-white bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setFirstName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
             value={firstName}
           />
@@ -101,7 +102,7 @@ export default function Register() {
           required
             type="text"
             placeholder="Last Name"
-            className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
+            className="w-[300px] placeholder:text-white h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setLastName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
             value={lastName}
           />
@@ -109,7 +110,7 @@ export default function Register() {
           required
             type="email"
             placeholder="Email"
-            className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
+            className="w-[300px] h-[40px] bg-transparent placeholder:text-white border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
           />
@@ -120,14 +121,14 @@ export default function Register() {
           className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
           onChange={(e) => setPassword(e.target.value)}
           value={password}
-          pattern="^(?=.*[A-Z])(?=.*[\W_]).{8,}$"
+          pattern="^(?=.*[A-Z])(?=.*[!@#$%^&*()_+[\]{};':\'\\|,.<>\/?`~\-]).{8,}$"
           title="Password must be at least 8 characters long and include at least one uppercase letter and one symbol."
           />
           <input
           required
             type="text"
             placeholder="Address"
-            className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
+            className="w-[300px] h-[40px] bg-transparent placeholder:text-white border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setAddress(e.target.value)}
             value={address}
           />
@@ -135,7 +136,7 @@ export default function Register() {
           required
             type="number"
             placeholder="Phone"
-            className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-4"
+            className="w-[300px] h-[40px] bg-transparent  placeholder:text-white first-line:border-b-2 border-white text-xl text-white outline-none mb-4"
             onChange={(e) => setPhone(e.target.value)}
             value={phone}
           />

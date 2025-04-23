@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken"
 import { checkAdmin, checkHasAccount } from './authController.js';
 import OTP from '../models/otp.js';
 import nodemailer from 'nodemailer';
+import Driver from '../models/driver.js';
+import axios from 'axios'
 
 
 
@@ -32,7 +34,7 @@ export async function createUser(req,res){
         })
 
         if(checkEmail){
-            res.json({
+            res.status(401).json({
                 message : "Email is Already use"
             })
             return
@@ -68,6 +70,10 @@ export async function userLogin(req,res) {
             email : email
         })
 
+        const checkDriver = await Driver.findOne({
+          email : email
+        })
+
         if(checkUser){
 
             const checkPassword = bcrypt.compareSync(
@@ -99,11 +105,48 @@ export async function userLogin(req,res) {
                 })
                 return
             }else{
-                res.json({
+                res.status.json({
                     message : "Password incorrect ,please try again!"
                 })
                 return
             }
+
+        }else if(checkDriver){
+
+          const checkPassword = bcrypt.compareSync(
+            data.password,checkDriver.password
+        );
+
+        if(checkPassword){
+            const token = jwt.sign(
+                {
+                    id : checkDriver._id,
+                    firstName : checkDriver.firstName,
+                    lastName : checkDriver.lastName,
+                    email : checkDriver.email,
+                    password : checkDriver.password,
+                    role : checkDriver.role,
+                    address : checkDriver.address,
+                    phone : checkDriver.phone,
+                    image : checkDriver.image,
+                    lat : checkDriver.lat,
+                    lng : checkDriver.lng
+
+                },
+                process.env.SEKRET_KEY
+            );
+            res.json({
+                message : "Login successfully",
+                token : token,
+                user : checkDriver
+            })
+            return
+        }else{
+            res.json({
+                message : "Password incorrect ,please try again!"
+            })
+            return
+        }
 
         }else{
             res.status(404).json({
@@ -314,7 +357,10 @@ export async function getUsers(req, res) {
   }
   
   export async function loginWithGoogle(req, res) {
+
     const accessToken = req.body.accessToken;
+
+
   
     try {
       const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -322,6 +368,8 @@ export async function getUsers(req, res) {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      console.log(response)
+
   
       console.log(response.data);
       const user = await User.findOne({

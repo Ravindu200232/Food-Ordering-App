@@ -100,13 +100,21 @@ export async function updateRestaurant(req,res) {
         if(checkHasAccount(req)){
             if(checkAdmin(req)){
 
-                await Restaurant.updateOne({
-                    _id : id
-                },(data))
+                const updateResult = await Restaurant.updateOne({
+                    _id: id
+                }, { verified: true });
+
+                if (updateResult.modifiedCount === 0) {
+                    res.status(404).json({
+                        message: "No restaurant found to update"
+                    });
+                    return;
+                }
+
                 res.json({
-                    message : "Update Successfully"
-                })
-                return
+                    message: "Update Successfully"
+                });
+                return;
             }
             
             if(checkRestaurant(req)){

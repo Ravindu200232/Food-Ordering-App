@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import { checkAdmin, checkDelivery, checkHasAccount, checkRestaurant } from "./authController.js";
 
 
+
 export async function createDriver(req,res){
 
     try{
@@ -163,7 +164,7 @@ export async function updateDriver(req,res) {
             if(checkDelivery(req)){
                 await Driver.updateOne({
                     _id : req.user.id
-                })
+                },data)
                 res.json({
                     message : "Driver update successfully"
                 })
@@ -232,3 +233,9 @@ export async function deleteDriver(req,res) {
     }
     
 }
+
+
+
+
+
+

@@ -44,7 +44,7 @@ export function Profile() {
     const fetchDeliveries = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:3003/api/v1/delivery`, {
+        const response = await axios.get(`http://localhost:3003/api/v1/driver`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userDeliveries = response.data.filter(d => d.customerEmail === user?.email);

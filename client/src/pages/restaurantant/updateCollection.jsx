@@ -59,7 +59,7 @@ export default function UpdateCollection() {
         }
       );
       toast.success(result.data.message || "Item updated successfully");
-      navigate("/admin/item");
+      navigate("/restaurantC/restaurant");
     } catch (err) {
       toast.error(err.response?.data?.error || "Failed to update item");
     }
@@ -94,7 +94,7 @@ export default function UpdateCollection() {
           onChange={(e) => setItemCategory(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg"
         >
-          <option value="fastfood">Fast Food</option>
+         <option value="fastfood">Fast Food</option>
           <option value="familyMeals">Family Meals</option>
           <option value="dessert">Dessert</option>
         </select>

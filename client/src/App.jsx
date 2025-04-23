@@ -11,11 +11,14 @@ import VerifyEmail from "./pages/verifyEmail/verifyEmail";
 import { Payment } from "./pages/home/payment";
 import BookingConfirmation from "./pages/home/bookingConfirmation";
 import RestaurantPage from "./pages/restaurantant/restaurantPage";
+import RestaurantRegister from "./pages/restaurant signup/resregister";
+import DriverRegister from "./pages/driver signup/drregister";
+import DriverPage from "./pages/driver/driverPage";
 
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId="93119756985-3cvvkvdu7epn3h2k0i53pg5i17o9b3ji.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="964342724823-b4bjne48paevmqpvbi48b5ebepjsiefe.apps.googleusercontent.com">
       <BrowserRouter>
         <Toaster position="top-right" />
         <Routes path="/">
@@ -27,6 +30,10 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="restaurantC/*" element={<RestaurantPage/>}/>
+          <Route path="/restaurant-signup" element={<RestaurantRegister />} />
+          <Route path="/driver-signup" element={<DriverRegister/>}/>
+          <Route path="driver/*" element={<DriverPage/>}/>
+
           <Route
             path="/bookingconfirmation"
             element={<BookingConfirmation />}

@@ -95,17 +95,17 @@ export default function Item() {
             </label>
 
             {/* familyMeals Checkbox */}
-            <label className="flex items-center space-x-2 cursor-pointer text-white">
-              <input
-                type="checkbox"
-                value="familyMeals"
-                onChange={handleFilterChange}
-                className="w-5 h-5 rounded-md border-2 border-gray-400 accent-green-500 transition-all duration-200 hover:scale-110"
-              />
-              <span className="text-lg">Family Meal</span>
-            </label>
+                  <label className="flex items-center space-x-2 cursor-pointer text-white">
+                    <input
+                    type="checkbox"
+                    value="familymeals"
+                    onChange={handleFilterChange}
+                    className="w-5 h-5 rounded-md border-2 border-gray-400 accent-green-500 transition-all duration-200 hover:scale-110"
+                    />
+                    <span className="text-lg">Family Meal</span>
+                  </label>
 
-            {/* dessert Checkbox */}
+                  {/* dessert Checkbox */}
             <label className="flex items-center space-x-2 cursor-pointer text-white">
               <input
                 type="checkbox"

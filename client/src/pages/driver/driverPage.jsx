@@ -1,23 +1,15 @@
-import { CgProfile } from "react-icons/cg"; 
 import { MdOutlinePayments, MdRateReview } from "react-icons/md";
 import { BsGraphDown } from "react-icons/bs";
 import { CiSpeaker, CiBookmarkCheck, CiUser } from "react-icons/ci";
 import { Link, Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
+import { Available } from "./available.jsx";
+import { DeliveryTrack } from "./deliveryTrack.jsx";
 
-import AdminItemPage from "./adminItemPage";
 
-import User from "./users";
-import AdminBookingPage from "./adminbookingpage";
-import { AdminReviewPage } from "./adminReviewpage";
-import { AdminInquiryPage } from "./adminInquirypage";
-import AdminPackagePage from "./adminpakage";
 
-import { AdminPayment } from "./adminPayment";
-import { Profile } from "./profile";
-
-export default function AdminPage() {
+export default function DriverPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -45,40 +37,25 @@ export default function AdminPage() {
       >
         <div>
           <div className="flex items-center justify-center h-20 border-b">
-            <h1 className="text-2xl font-bold text-gray-800">Admin Panel</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Driver Panel</h1>
           </div>
 
           <nav className="mt-6">
             {[
               {
-                to: "/admin/booking",
+                to: "/driver/available",
                 icon: <CiBookmarkCheck />,
-                label: "Bookings",
+                label: "Available",
               },
              
               {
-                to: "/admin/package",
+                to: "/driver/track",
                 icon: <CiBookmarkCheck />,
-                label: "Restaurant",
+                label: "Delivery",
               },
-              { to: "/admin/user", icon: <CiUser />, label: "Users" },
-              { to: "/admin/review", icon: <MdRateReview />, label: "Reviews" },
-              {
-                to: "/admin/inquiry",
-                icon: <BsGraphDown />,
-                label: "Inquiries",
-              },
-              {
-                to: "/admin/payment",
-                icon: <MdOutlinePayments />,
-                label: "Payment",
-              },
-
-              {
-                to: "/admin/profile",
-                icon: <CgProfile />,
-                label: "Profile",
-              },
+            
+             
+              
             ].map(({ to, icon, label }) => (
               <Link
                 key={to}
@@ -108,15 +85,12 @@ export default function AdminPage() {
       {/* Main Content */}
       <main className="flex-1 p-4 :ml-64 bg-gray-100 overflow-y-auto">
         <Routes>
-          <Route path="/booking" element={<AdminBookingPage />} />
-          <Route path="/item" element={<AdminItemPage />} />
-          <Route path="/user/*" element={<User />} />
-          <Route path="/review" element={<AdminReviewPage />} />
-          <Route path="/inquiry" element={<AdminInquiryPage />} />
-          <Route path="/package" element={<AdminPackagePage />} />
-          <Route path="/profile" element={<Profile />} />
           
-          <Route path="/payment" element={<AdminPayment />} />
+         
+          
+          <Route path="/available" element={<Available/>} />
+             
+          <Route path="/track" element={<DeliveryTrack/>} />
         </Routes>
       </main>
     </div>

@@ -1,3 +1,4 @@
+import { CgProfile } from "react-icons/cg"; 
 import { MdOutlinePayments, MdRateReview } from "react-icons/md";
 import { BsGraphDown } from "react-icons/bs";
 import { CiSpeaker, CiBookmarkCheck, CiUser } from "react-icons/ci";
@@ -19,6 +20,7 @@ import CollectionPage from "./collectionPage";
 import AddCollection from "./addCollection";
 import UpdateCollection from "./updateCollection";
 import RestaurantOrder from "./restaurantOrder";
+import { Profile } from "./profile";
 
 export default function RestaurantPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -64,6 +66,11 @@ export default function RestaurantPage() {
                 icon: <CiBookmarkCheck />,
                 label: "Restaurant",
               },
+              {
+                to: "/restaurantC/profile",
+                icon: <CgProfile />,
+                label: "Profile",
+              },
          
               { to: "/restaurantC/review", icon: <MdRateReview />, label: "Reviews" },
               ,
@@ -101,6 +108,7 @@ export default function RestaurantPage() {
           <Route path="/restaurant/collection" element={<CollectionPage />} />
           <Route path="/restaurant/collection/add" element={<AddCollection />} />
           <Route path="/restaurant/collection/update" element={<UpdateCollection />} />
+          <Route path="/profile" element={<Profile />} />
 
           <Route path="/review" element={<RestaurantReview />} />
 

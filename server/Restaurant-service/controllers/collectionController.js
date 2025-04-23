@@ -135,6 +135,7 @@ export async function updateCollection(req,res) {
                         description : data.description,
                         price : data.price,
                         images : data.images,
+                        category : data.category,
                        })
                        res.json({
                         message : "Collection Update successfully"

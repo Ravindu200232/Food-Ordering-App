@@ -221,46 +221,7 @@ export function Profile() {
         </div>
       </div>
 
-      <div className="mt-10">
-        <h3 className="text-white text-xl mb-4">Delivery History</h3>
-        {deliveriesLoading ? (
-          <p>Loading...</p>
-        ) : (
-          deliveries.map((delivery) => (
-            <div key={delivery._id} className="bg-white p-4 mb-4 rounded shadow-sm">
-              <p><strong>Order ID:</strong> {delivery.orderId}</p>
-                        <p><strong>Order Name:</strong> {delivery.orderName}</p>
-                        <p><strong>Delivered To:</strong> {delivery.address}</p>
-                        <p><strong>Driver:</strong> {delivery.driverName} ({delivery.driverPhone})</p>
-                        <p><strong>Status:</strong> {delivery.status}</p>
-                        <p><strong>Estimated Time:</strong> {new Date(delivery.estimatedTime).toLocaleString()}</p>
-              <div className="flex items-center gap-4 mt-4">
-                <img
-                  src={delivery.itemImage}
-                  alt={delivery.orderName}
-                  className="w-20 h-20 object-cover rounded"
-                />
-                <div>
-                  <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => handleDriverLocation(delivery._id)}
-                  >
-                    {expandedDeliveryId === delivery._id ? "" : "View Driver Location"}
-                  </button>
-                  {expandedDeliveryId === delivery._id && (
-                    <div
-                      ref={(el) => (mapRefs.current[delivery._id] = el)}
-                      className="mt-3"
-                      style={{ height: "300px", width: "800px",  }}
-
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+      
 
       
     </div>

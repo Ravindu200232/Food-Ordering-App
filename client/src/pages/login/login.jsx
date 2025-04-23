@@ -15,7 +15,7 @@ export default function Login() {
     onSuccess: (res) => {
       console.log(res);
       axios
-        .post(`${import.meta.env.VITE_BACKEND_URL}/api/users/google`, {
+        .post(`http://localhost:3000/api/v1/users/google`, {
           accessToken: res.access_token,
         })
         .then((res) => {
@@ -41,11 +41,11 @@ export default function Login() {
             return
           } 
           if(user.role == "restaurant"){
-            navigate("/restaurantC/")
+            navigate("/restaurantC/") // Navigate to restaurant dashboard
             return
           }
           else {
-            navigate("/");
+            navigate("/"); // Navigate to home
           }
         })
         .catch((err) => {
@@ -55,9 +55,7 @@ export default function Login() {
   });
 
   function handleOnSubmit(e) {
-    e.preventDefault(); //default sumbit refres wena eka nawaththganna
-
-   
+    e.preventDefault(); //default submit refresh to prevent page reload
 
     axios
       .post(`http://localhost:3000/api/v1/users/login`, {
@@ -86,6 +84,7 @@ export default function Login() {
             image: user.image,
             lat : user.lat,
             lng : user.lng
+
           })
         );
 
@@ -96,14 +95,19 @@ export default function Login() {
         }
 
         if (user.role == "admin") {
-          navigate("/admin/");
+          navigate("/admin/"); // Navigate to admin dashboard
           return
-        } if(user.role == "restaurant"){
-          navigate("/restaurantC/")
+        } 
+        if(user.role == "restaurant") {
+          navigate("/restaurantC/") // Navigate to restaurant dashboard
+          return
+        }
+        if(user.role == "delivery") {
+          navigate("/driver/") // Navigate to restaurant dashboard
           return
         }
         else {
-          navigate("/");
+          navigate("/"); // Navigate to home page
         }
       })
       .catch((err) => {
@@ -124,6 +128,7 @@ export default function Login() {
             Login
           </span>
           <input
+          required
             type="email"
             placeholder="Email"
             className="w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white placeholder-white outline-none"
@@ -131,6 +136,7 @@ export default function Login() {
             value={email}
           />
           <input
+          required
             type="password"
             placeholder="Password"
             className="w-[300px] h-[40px] bg-transparent border-b-2 border-white mt-6 text-xl text-white placeholder-white outline-none"
@@ -154,7 +160,6 @@ export default function Login() {
               Login with Google
             </button>
 
-            {/* //create sign up button to navigate to signup page */}
             <p className="text-white mt-4">
               Don't have an account?{" "}
               <span
@@ -164,6 +169,28 @@ export default function Login() {
                 Sign Up
               </span>
             </p>
+
+            {/* Additional Links */}
+            <div className="text-white mt-4">
+              <p>
+                Want to join as a{" "}
+                <span
+                  className="text-blue-500 cursor-pointer"
+                  onClick={() => navigate("/restaurant-signup")}
+                >
+                  Restaurant Owner?
+                </span>
+              </p>
+              <p>
+                Want to become a{" "}
+                <span
+                  className="text-blue-500 cursor-pointer"
+                  onClick={() => navigate("/driver-signup")}
+                >
+                  Driver?
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

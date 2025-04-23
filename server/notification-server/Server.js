@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectToDatabase } from './DbConnection.js';
 import jwt, { decode } from "jsonwebtoken"
 import cors from 'cors'
+import notificationRoute from './routes/notificationRoute.js';
 
 dotenv.config();
 
@@ -32,6 +33,8 @@ app.use((req,res,next)=>{
 });
 
 connectToDatabase();
+
+app.use("/api/v1/notification",notificationRoute);
 
 
 
