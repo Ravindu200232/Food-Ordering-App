@@ -55,9 +55,9 @@ export default function Footer() {
         {/* Contact Section */}
         <div className="w-full sm:w-[45%] md:w-1/4 text-center md:text-left">
           <h1 className="text-xl font-semibold mb-4">Get in Touch</h1>
-          <p className="text-gray-400">Email: support@audiostore.com</p>
-          <p className="text-gray-400">Phone: +1 234 567 890</p>
-          <p className="text-gray-400">Location: 123 Music Street, NY</p>
+          <p className="text-gray-400">Email: support@foodOrder.com</p>
+          <p className="text-gray-400">Phone: +94789840996</p>
+          <p className="text-gray-400">Location: 123 colombe Street, NY</p>
         </div>
 
         {/* Social Media Section */}
@@ -79,7 +79,7 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <div className="text-center text-gray-500 mt-8 text-sm">
-        &copy; {new Date().getFullYear()} AudioStore. All rights reserved.
+        &copy; {new Date().getFullYear()} Food Order. All rights reserved.
       </div>
     </footer>
   );
