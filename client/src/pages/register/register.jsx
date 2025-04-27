@@ -92,6 +92,7 @@ export default function Register() {
           <input
             required
             type="text"
+            name="firstName"
             placeholder="First Name"
             className=" placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setFirstName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
@@ -100,6 +101,7 @@ export default function Register() {
           <input
           required
             type="text"
+            name="lastName"
             placeholder="Last Name"
             className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setLastName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
@@ -108,6 +110,7 @@ export default function Register() {
           <input
           required
             type="email"
+            name="email"
             placeholder="Email"
             className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setEmail(e.target.value)}
@@ -116,6 +119,7 @@ export default function Register() {
           <input
           required
           type="password"
+          name="password"
           placeholder="Password"
           className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
           onChange={(e) => setPassword(e.target.value)}
@@ -126,6 +130,7 @@ export default function Register() {
           <input
           required
             type="text"
+            name="address"
             placeholder="Address"
             className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-3"
             onChange={(e) => setAddress(e.target.value)}
@@ -134,13 +139,14 @@ export default function Register() {
           <input
           required
             type="number"
+            name="phone"
             placeholder="Phone"
             className="placeholder:text-white w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white outline-none mb-4"
             onChange={(e) => setPhone(e.target.value)}
             value={phone}
           />
 
-          <button className="mt-4 w-[300px] h-[50px] bg-[#010750] text-xl text-white rounded-lg">
+          <button type="submit" className="mt-4 w-[300px] h-[50px] bg-[#010750] text-xl text-white rounded-lg">
             Register
           </button>
 

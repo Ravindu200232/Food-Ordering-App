@@ -63,6 +63,7 @@ export default function Login() {
         password: password,
       })
       .then((res) => {
+        console.log
         if (res.data.message == "User is blocked") {
           toast.error(res.data.message);
           return;
@@ -111,7 +112,9 @@ export default function Login() {
         }
       })
       .catch((err) => {
-        toast.error(err.response.data.error);
+        console.log(err)
+        toast.error(err.response.data.message);
+        
       });
   }
 
@@ -131,6 +134,7 @@ export default function Login() {
           required
             type="email"
             placeholder="Email"
+            name="email"
             className="w-[300px] h-[40px] bg-transparent border-b-2 border-white text-xl text-white placeholder-white outline-none"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
@@ -138,6 +142,7 @@ export default function Login() {
           <input
           required
             type="password"
+            name="password"
             placeholder="Password"
             className="w-[300px] h-[40px] bg-transparent border-b-2 border-white mt-6 text-xl text-white placeholder-white outline-none"
             onChange={(e) => setPassword(e.target.value)}

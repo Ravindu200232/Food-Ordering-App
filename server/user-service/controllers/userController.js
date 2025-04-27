@@ -105,7 +105,7 @@ export async function userLogin(req,res) {
                 })
                 return
             }else{
-                res.status.json({
+                res.status(404).json({
                     message : "Password incorrect ,please try again!"
                 })
                 return
@@ -142,7 +142,7 @@ export async function userLogin(req,res) {
             })
             return
         }else{
-            res.json({
+          res.status(404).json({
                 message : "Password incorrect ,please try again!"
             })
             return
@@ -156,7 +156,7 @@ export async function userLogin(req,res) {
         }
     }catch(err){
         res.status(500).json({
-            err : "user Login unsuccessfully!"
+            message : "user Login unsuccessfully!"
         })
     }
 
