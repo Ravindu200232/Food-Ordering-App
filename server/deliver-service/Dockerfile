@@ -1,6 +1,6 @@
 # Dockerfile for delivery Service
 
-FROM node:20-alpine
+FROM node:20-slim
 
 RUN npm install -g nodemon
 
@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm install
 
-EXPOSE 5000
+EXPOSE 3003
 
 CMD ["npm", "start"]

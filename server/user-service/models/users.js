@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
+    address :{
+        type : String,
+        required : true
+    },
     role : {
         type : String,
         enum : ['customer','restaurant','delivery','admin'],
@@ -49,6 +53,20 @@ const userSchema = new mongoose.Schema({
         required : true,
         default : "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
     },
+    emailVerified : {
+        type : Boolean,
+        required : true,
+        default : false
+    },
+lat: {
+    type: Number,
+    required:false
+},
+lng: {
+    type: Number,
+    required:false
+   
+},
 
 })
 
