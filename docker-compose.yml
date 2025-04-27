@@ -1,10 +1,22 @@
+version: "3.9"
+
 services:
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo_container
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
 
   user_service:
     build: ./server/user-service
     container_name: user_service_container
     ports:
       - "3000:3000"
+    depends_on:
+      - mongo
     volumes:
       - ./server/user-service:/app
       - user_service_node_modules:/app/node_modules
@@ -18,9 +30,10 @@ services:
       - "3001:3000"
     depends_on:
       - user_service
+      - mongo
     volumes:
       - ./server/order-service:/app
-      - ./server/order-service/node_modules:/app/node_modules
+      - order_service_node_modules:/app/node_modules
     environment:
       - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
 
@@ -31,9 +44,10 @@ services:
       - "3002:3000"
     depends_on:
       - user_service
+      - mongo
     volumes:
       - ./server/Restaurant-service:/app
-      - ./server/Restaurant-service/node_modules:/app/node_modules
+      - restaurant_service_node_modules:/app/node_modules
     environment:
       - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
 
@@ -44,9 +58,10 @@ services:
       - "3003:3000"
     depends_on:
       - user_service
+      - mongo
     volumes:
       - ./server/deliver-service:/app
-      - ./server/deliver-service/node_modules:/app/node_modules
+      - deliver_service_node_modules:/app/node_modules
     environment:
       - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
 
@@ -57,9 +72,10 @@ services:
       - "3004:3000"
     depends_on:
       - user_service
+      - mongo
     volumes:
       - ./server/payment-service:/app
-      - ./server/payment-service/node_modules:/app/node_modules
+      - payment_service_node_modules:/app/node_modules
     environment:
       - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
 
@@ -70,9 +86,10 @@ services:
       - "3005:3000"
     depends_on:
       - user_service
+      - mongo
     volumes:
       - ./server/notification-server:/app
-      - ./server/notification-server/node_modules:/app/node_modules
+      - notification_service_node_modules:/app/node_modules
     environment:
       - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
 
@@ -95,10 +112,11 @@ services:
       - client_node_modules:/app/node_modules
 
 volumes:
-  client_node_modules:
+  mongo_data:
   user_service_node_modules:
   order_service_node_modules:
   restaurant_service_node_modules:
   deliver_service_node_modules:
   payment_service_node_modules:
   notification_service_node_modules:
+  client_node_modules:

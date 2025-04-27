@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const driverSchema = new mongoose.Schema({
 
+    
     firstName : {
         type : String,
         required : true,
@@ -9,31 +10,42 @@ const userSchema = new mongoose.Schema({
     lastName : {
         type : String,
         required : true,
-    },
+    }
+    ,
     email : {
         type : String,
-        required : true,
-        unique : true,
-    },
-    password : {
-        type : String,
-        required : true,
-    },
-    role : {
-        type : String,
-        enum : ['customer','restaurant','delivery','admin'],
-        default : 'customer',
-        required : true,
+        required : true
     },
     phone : {
         type : String,
         required : true,
     },
-    createdAt : {
-        type : Date,
-        default : Date.now,
-    }
-    ,
+    role : {
+        type : String,
+        required : true,
+        default : "delivery",
+    },
+    password : {
+        type : String,
+        required : true
+    },
+    vehicleType : {
+        type : String,
+        required : true,
+    },
+    drNic : {
+        type : String,
+        required : true
+    },
+    isAvailable : {
+        type : Boolean,
+        required : true,
+        default : false,
+    },
+    address : {
+        type : String,
+        required : true
+    },
     isVerified : {
         type : Boolean,
         default : false,
@@ -49,9 +61,8 @@ const userSchema = new mongoose.Schema({
         required : true,
         default : "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
     },
-
 })
 
-const User = mongoose.model('User',userSchema)
+const Driver = mongoose.model("driver",driverSchema);
 
-export default User;
+export default Driver
