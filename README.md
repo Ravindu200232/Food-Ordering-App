@@ -181,4 +181,3 @@ food-ordering-app/
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ```
 
-You can copy-paste this into your `README.md` file. It includes all the necessary details for setting up, running, and understanding the structure of your Food Ordering System.
