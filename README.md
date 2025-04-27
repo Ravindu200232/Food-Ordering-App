@@ -1,6 +1,6 @@
 Here's a clean and structured `README.md` file based on the information you provided for your Food Ordering System:
 
-```markdown
+
 # Food Ordering System — Deployment Guide
 
 This document provides the step-by-step instructions to deploy the **Food Ordering System** using Docker and Docker Compose.
