@@ -1,42 +1,69 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-  userId: {
+  // Customer Info
+  email: {
+    type: String,
+    required: true,
+  },
+  customerName : {
     type : String,
     required : true
   },
-  restaurantId: {
+  phone : {
     type : String,
+    required : true
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+
+  // Unique Order ID
+  orderId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  // Product Info (flat structure per item)
+  key: {
+    type: String,  // Product ID
+    required: true,
+  },
+  Item_Id: {
+    type: String,
+    required: true,
+  },
+  Item_name: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+
+  // Restaurant Info
+  restaurantId: {
+    type: String,
     ref: "Restaurant",
     required: true,
   },
-  items: [
-    {
-      menuItemId: {
-        type: String,
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      quantity: {
-        type: Number,
-        required: true,
-        min: 1,
-      },
-      price: {
-        type: Number,
-        required: true,
-        min: 0,
-      },
-    },
-  ],
-  total: {
-    type: Number,
+  ownerId: {
+    type: String,
     required: true,
-    min: 0,
   },
+
+  // Order Status & Tracking
   status: {
     type: String,
     enum: ["pending", "confirmed", "preparing", "dispatched", "delivered"],
@@ -44,25 +71,42 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   deliveryId: {
-    type: String,
-    required : true
+    type: String, // Optional: Delivery agent ID
+  },
+
+  // Pricing & Payment
+  totalAmount: {
+    type: Number,
+    required: true,
   },
   paymentStatus: {
     type: String,
     enum: ["unpaid", "paid"],
     default: "unpaid",
+  },
+
+  // Admin Approval
+  isApprove: {
+    type: Boolean,
+    default: false,
     required: true,
   },
+
+  // Timestamp
   createdAt: {
     type: Date,
     default: Date.now,
     required: true,
   },
-  isApprove :{
-    type : Boolean,
-    required : true,
-    default : false,
-  }
+  lat: {
+    type: Number,
+    required:false
+},
+lng: {
+    type: Number,
+    required:false
+   
+},
 });
 
 const Order = mongoose.model("Order", orderSchema);
