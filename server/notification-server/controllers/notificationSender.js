@@ -35,7 +35,8 @@ export async function EmailSender(req, res) {
     } = req.body;
 
     // Fetch restaurant info
-    const restaurantRes = await axios.get(`http://localhost:3002/api/v1/restaurant/getOne/${restaurantId}`);
+    const restaurantServiceUrl = process.env.RESTAURANT_SERVICE_URL || 'http://localhost:3002';
+    const restaurantRes = await axios.get(`${restaurantServiceUrl}/api/v1/restaurant/getOne/${restaurantId}`);
     const restaurant = restaurantRes.data?.data;
 
     const locationLink = `https://www.google.com/maps?q=${lat},${lng}`;
