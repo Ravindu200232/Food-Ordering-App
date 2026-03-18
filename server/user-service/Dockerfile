@@ -1,17 +1,18 @@
-# Use Node.js base image
-FROM node:20-slim
-
-RUN npm install -g nodemon
-
-
-
+# Stage 1: Build
+FROM node:20-alpine AS builder
 WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
 
+# Stage 2: Production
+FROM node:20-alpine AS production
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
 COPY . .
-
-RUN npm install
-
+RUN chown -R appuser:appgroup /app
+USER appuser
 EXPOSE 3000
-
-# Start the app
-CMD ["npm", "start"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget -qO- http://localhost:3000/health || exit 1
+CMD ["node", "Server.js"]

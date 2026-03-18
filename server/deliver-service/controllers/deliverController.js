@@ -1,4 +1,5 @@
 import Delivery from "../models/delivery.js";
+import axios from "axios";
 import { checkCustomer, checkRestaurant } from "./authController.js";
 
 export async function addDelivery(req, res) {
@@ -7,32 +8,21 @@ export async function addDelivery(req, res) {
         await newDeliver.save();
         res.json("Delivery details added successfully");
     } catch (err) {
-        res.status(500).json({
-            error: err
-        });
+        res.status(500).json({ error: err });
     }
 }
 
 export async function getDelivery(req, res) {
     try {
-
-        if(checkCustomer(req) || checkRestaurant(req)){
-
-            const result =await Delivery.find({
-                customerEmail : req.user.email
-            })
+        if (checkCustomer(req) || checkRestaurant(req)) {
+            const result = await Delivery.find({ customerEmail: req.user.email });
             res.json(result);
-            return
+            return;
         }
-        const result = await Delivery.find({
-            driverId: req.user.id
-        });
-
+        const result = await Delivery.find({ driverId: req.user.id });
         res.json(result);
     } catch (err) {
-        res.status(500).json({
-            error: err
-        });
+        res.status(500).json({ error: err });
     }
 }
 
@@ -56,9 +46,7 @@ export async function updateDeliveryLocation(req, res) {
 
         res.json(updatedDelivery);
     } catch (err) {
-        res.status(500).json({
-            error: err
-        });
+        res.status(500).json({ error: err });
     }
 }
 
@@ -80,33 +68,26 @@ export async function updateDeliveryStatus(req, res) {
             return res.status(404).json({ error: "Delivery not found" });
         }
 
+        // Notify order-service to sync delivery status
+        const orderServiceUrl = process.env.ORDER_SERVICE_URL || 'http://localhost:3001';
+        try {
+            await axios.put(`${orderServiceUrl}/api/v1/orders/status/${updatedDelivery.orderId}`, { status });
+        } catch (interServiceErr) {
+            console.error('Failed to sync order status:', interServiceErr.message);
+        }
+
         res.json(updatedDelivery);
     } catch (err) {
-        res.status(500).json({
-            error: err
-        });
+        res.status(500).json({ error: err });
     }
 }
 
-
-export async function getLocation(req,res) {
-
-    try{
-
+export async function getLocation(req, res) {
+    try {
         const id = req.params.id;
-
-        const result = await Delivery.findOne({
-
-            _id : id
-        })
-
-        res.json(result)
-
+        const result = await Delivery.findOne({ _id: id });
+        res.json(result);
     } catch (err) {
-        res.status(500).json({
-            error: err
-        });
+        res.status(500).json({ error: err });
     }
-    
 }
-

@@ -9,6 +9,11 @@ services:
       - mongo_data:/data/db
     ports:
       - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   user_service:
     build: ./server/user-service
@@ -16,82 +21,116 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - mongo
-    volumes:
-      - ./server/user-service:/app
-      - user_service_node_modules:/app/node_modules
+      mongo:
+        condition: service_healthy
     environment:
-      - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
+      - PORT=3000
+      - MONGO_URL=${MONGO_URL}
+      - SEKRET_KEY=${SEKRET_KEY}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   order_service:
     build: ./server/order-service
     container_name: order_service_container
     ports:
-      - "3001:3000"
+      - "3001:3001"
     depends_on:
-      - user_service
-      - mongo
-    volumes:
-      - ./server/order-service:/app
-      - order_service_node_modules:/app/node_modules
+      user_service:
+        condition: service_healthy
     environment:
-      - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
+      - PORT=3001
+      - MONGO_URL=${MONGO_URL}
+      - SEKRET_KEY=${SEKRET_KEY}
+      - NOTIFICATION_SERVICE_URL=http://notification_service_container:3005
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   restaurant_service:
     build: ./server/Restaurant-service
     container_name: restaurant_service_container
     ports:
-      - "3002:3000"
+      - "3002:3002"
     depends_on:
-      - user_service
-      - mongo
-    volumes:
-      - ./server/Restaurant-service:/app
-      - restaurant_service_node_modules:/app/node_modules
+      user_service:
+        condition: service_healthy
     environment:
-      - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
+      - PORT=3002
+      - MONGO_URL=${MONGO_URL}
+      - SEKRET_KEY=${SEKRET_KEY}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   deliver_service:
     build: ./server/deliver-service
     container_name: deliver_service_container
     ports:
-      - "3003:3000"
+      - "3003:3003"
     depends_on:
-      - user_service
-      - mongo
-    volumes:
-      - ./server/deliver-service:/app
-      - deliver_service_node_modules:/app/node_modules
+      user_service:
+        condition: service_healthy
     environment:
-      - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
+      - PORT=3003
+      - MONGO_URL=${MONGO_URL}
+      - SEKRET_KEY=${SEKRET_KEY}
+      - ORDER_SERVICE_URL=http://order_service_container:3001
+      - NOTIFICATION_SERVICE_URL=http://notification_service_container:3005
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   payment_service:
     build: ./server/payment-service
     container_name: payment_service_container
     ports:
-      - "3004:3000"
+      - "3004:3004"
     depends_on:
-      - user_service
-      - mongo
-    volumes:
-      - ./server/payment-service:/app
-      - payment_service_node_modules:/app/node_modules
+      order_service:
+        condition: service_healthy
     environment:
-      - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
+      - PORT=3004
+      - MONGO_URL=${MONGO_URL}
+      - SEKRET_KEY=${SEKRET_KEY}
+      - ORDER_SERVICE_URL=http://order_service_container:3001
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   notification_service:
     build: ./server/notification-server
     container_name: notification_service_container
     ports:
-      - "3005:3000"
+      - "3005:3005"
     depends_on:
-      - user_service
-      - mongo
-    volumes:
-      - ./server/notification-server:/app
-      - notification_service_node_modules:/app/node_modules
+      restaurant_service:
+        condition: service_healthy
     environment:
-      - MONGO_URL=mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/FoodOrderApp?retryWrites=true&w=majority&appName=Cluster0
+      - PORT=3005
+      - MONGO_URL=${MONGO_URL}
+      - SEKRET_KEY=${SEKRET_KEY}
+      - RESTAURANT_SERVICE_URL=http://restaurant_service_container:3002
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   client:
     build: ./client
@@ -107,16 +146,13 @@ services:
       - "5173:5173"
     stdin_open: true
     tty: true
-    volumes:
-      - ./client:/app
-      - client_node_modules:/app/node_modules
+    environment:
+      - VITE_USER_SERVICE_URL=http://localhost:3000
+      - VITE_ORDER_SERVICE_URL=http://localhost:3001
+      - VITE_RESTAURANT_SERVICE_URL=http://localhost:3002
+      - VITE_DELIVER_SERVICE_URL=http://localhost:3003
+      - VITE_PAYMENT_SERVICE_URL=http://localhost:3004
+      - VITE_NOTIFICATION_SERVICE_URL=http://localhost:3005
 
 volumes:
   mongo_data:
-  user_service_node_modules:
-  order_service_node_modules:
-  restaurant_service_node_modules:
-  deliver_service_node_modules:
-  payment_service_node_modules:
-  notification_service_node_modules:
-  client_node_modules:
